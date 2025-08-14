@@ -1,0 +1,18 @@
+name: update-profile
+on:
+  schedule: [{ cron: "0 */12 * * *" }]
+  workflow_dispatch:
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Touch README to refresh
+        run: echo "$(date -u) refresh" >> .last_update
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .last_update
+          git commit -m "chore: update profile timestamp" || echo "no changes"
+          git push
